@@ -46,8 +46,8 @@ grow(){
 
 food(){
     do{
-    let height = c.height-10
-    let width = c.width-10
+    let height = c.height-this.h
+    let width = c.width-this.w
     this.foodx = Math.floor((Math.random() * width - 10) + 1)
     this.foody = Math.floor((Math.random() * height - 10) + 1)
     for(let i = 0;i<this.tail.length-1;i++){
@@ -74,7 +74,7 @@ eat(){
 endgame(){
     let x = this.tail[this.tail.length-1].x
     let y = this.tail[this.tail.length-1].y
-    if (x >= c.width||x <= 0||y >= c.width||y <= 0) lose = true
+    if (x >= c.width-this.w||x <= 0||y >= c.height-this.h||y <= 0) lose = true
     for(let i = 0;i<this.tail.length-1;i++){
         let coords = this.tail[i]
         if(coords.x == x && coords.y == y) lose = true
