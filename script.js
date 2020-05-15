@@ -1,20 +1,24 @@
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
 let speed = 20
-c.width = speed*25
-c.height = speed*25
+let sections = 30
+c.width = speed*sections
+c.height = speed*sections
 
 var lose = false
-function randomNum(num){
-    do{
+function randomNum(min,max){
+    let number = Math.floor(Math.random() * sections-1) + 1;
+    return number * speed
+    
+    /*do{
         var randomCoord = Math.floor(Math.random() * num); 
         var char = randomCoord.toString().slice(-1)
         var lastDigit = +char
         var penchar = randomCoord.toString().charAt(randomCoord.toString.length)
         var penDigit = +penchar
         console.log(lastDigit)
-    }while(randomCoord%2 != 0 || lastDigit != 0 || penDigit%2 !=0)
-    return randomCoord
+    }while(randomCoord%2 != 0 || lastDigit != 0 || penDigit%2 !=0 || randomCoord < 20) 
+    return randomCoord*/
 }
 class box {
     constructor(x, y, w, h) {
@@ -63,8 +67,8 @@ food(){
     let width = speed*25
     //this.foodx = Math.floor((Math.random() * width - 10) + 1)
     //this.foody = Math.floor((Math.random() * height - 10) + 1)
-    this.foodx = randomNum(height)
-    this.foody = randomNum(height)
+    this.foodx = randomNum(0,height)
+    this.foody = randomNum(0,height)
     for(let i = 0;i<this.tail.length-1;i++){
         let coords = this.tail[i]
         if(coords.x == this.foodx && coords.y == this.foody){
@@ -80,7 +84,8 @@ console.log("food "+this.foodx,this.foody)
 eat(){
     let x = this.tail[this.tail.length-1].x
     let y = this.tail[this.tail.length-1].y
-    if (x+this.w >= this.foodx && x <= this.foodx+this.w && y <= this.foody+this.h && y+this.h >= this.foody) {
+    //if (x+this.w >= this.foodx && x <= this.foodx+this.w && y <= this.foody+this.h && y+this.h >= this.foody) {
+    if (x == this.foodx && y == this.foody) {
         this.food()
         this.grow()
     }
@@ -100,7 +105,7 @@ endgame(){
 }
 
 
-var snake = new box(300,300,speed,speed)
+var snake = new box(20,20,speed,speed)
 snake.food()
 
 
