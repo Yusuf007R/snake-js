@@ -1,15 +1,28 @@
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
-c.width = 800
-c.height = 800
+let speed = 20
+c.width = speed*25
+c.height = speed*25
+
 var lose = false
+function randomNum(num){
+    do{
+        var randomCoord = Math.floor(Math.random() * num); 
+        var char = randomCoord.toString().slice(-1)
+        var lastDigit = +char
+        var penchar = randomCoord.toString().charAt(randomCoord.toString.length)
+        var penDigit = +penchar
+        console.log(lastDigit)
+    }while(randomCoord%2 != 0 || lastDigit != 0 || penDigit%2 !=0)
+    return randomCoord
+}
 class box {
     constructor(x, y, w, h) {
         this.x = x
         this.y = y
         this.w = w
         this.h = h
-        this.dir = {x:15,y:0}
+        this.dir = {x:speed,y:0}
         this.tail = []
         this.tail[0] = {x:this.x,y:this.y}
 
@@ -20,7 +33,7 @@ class box {
 drawHimself() {
     for(let i = 0;i<this.tail.length;i++){
         ctx.fillStyle = "purple"
-        ctx.fillRect(this.tail[i].x, this.tail[i].y, this.w-1, this.h-1)
+        ctx.fillRect(this.tail[i].x, this.tail[i].y, this.w, this.h)
     }
     if(this.Varfood){
         ctx.fillStyle = "blue"
@@ -45,19 +58,23 @@ grow(){
 
 
 food(){
-    do{
-    let height = c.height-this.h
-    let width = c.width-this.w
-    this.foodx = Math.floor((Math.random() * width - 10) + 1)
-    this.foody = Math.floor((Math.random() * height - 10) + 1)
+    var notSamePos = false  
+    let height = speed*25
+    let width = speed*25
+    //this.foodx = Math.floor((Math.random() * width - 10) + 1)
+    //this.foody = Math.floor((Math.random() * height - 10) + 1)
+    this.foodx = randomNum(height)
+    this.foody = randomNum(height)
     for(let i = 0;i<this.tail.length-1;i++){
         let coords = this.tail[i]
         if(coords.x == this.foodx && coords.y == this.foody){
             var notSamePos = false  
         } 
     }
-}while(this.foodx%2 != 0 && this.foody%2 != 0 && notSamePos == false)
-    this.Varfood = true
+
+    
+this.Varfood = true
+console.log("food "+this.foodx,this.foody)
 }
 
 eat(){
@@ -74,7 +91,7 @@ eat(){
 endgame(){
     let x = this.tail[this.tail.length-1].x
     let y = this.tail[this.tail.length-1].y
-    if (x >= c.width-this.w||x <= 0||y >= c.height-this.h||y <= 0) lose = true
+    if (x >= c.width-this.w+5||x < 0||y >= c.height-this.h+5||y < 0) lose = true
     for(let i = 0;i<this.tail.length-1;i++){
         let coords = this.tail[i]
         if(coords.x == x && coords.y == y) lose = true
@@ -83,34 +100,39 @@ endgame(){
 }
 
 
-var snake = new box(300,300,25,25)
-let speed = 25
+var snake = new box(300,300,speed,speed)
 snake.food()
 
 
 function loop(){
+document.getElementById("xd").innerHTML = "x: "+snake.tail[snake.tail.length-1].x+ "y: "+snake.tail[snake.tail.length-1].y
+document.getElementById("xdd").innerHTML = "x: "+snake.foodx+ "y: "+snake.foody
+
+
 
 snake.endgame()
 snake.eat()
 
 document.onkeydown = function (e) {
+    //console.log(snake.tail[snake.tail.length-1].x,snake.tail[snake.tail.length-1].y)
     switch (e.keyCode) {
         case 37:
-            if(snake.dir.x==speed) break;
+            if(snake.dir.x==speed && snake.tail.length > 1) break;
             snake.dir = {x:-speed,y:0}
             break;
         case 38:
-            if(snake.dir.y==speed) break;
+            if(snake.dir.y==speed && snake.tail.length > 1) break;
             snake.dir = {x:0,y:-speed}
             break;
         case 39:
-            if(snake.dir.x==-speed) break;
+            if(snake.dir.x==-speed && snake.tail.length > 1) break;
             snake.dir = {x:speed,y:0}
             break;
         case 40:
-            if(snake.dir.y==-speed) break;
+            if(snake.dir.y==-speed && snake.tail.length > 1) break;
             snake.dir = {x:0,y:speed}
             break;
+        
     }
 }
 ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -121,7 +143,7 @@ setInterval(()=>{
     if(!lose){
         loop()
     }else{
-        snake = new box(300,300,25,25)
+        snake = new box(300,300,speed,speed)
         snake.food()
         lose = false
         document.getElementById('canvas').style.backgroundColor = "red"
@@ -132,4 +154,4 @@ setInterval(()=>{
        
     }
 
-},90)
+},120)
